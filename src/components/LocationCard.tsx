@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Location } from '../types/locationTypes';
+import { Location } from '../src/types/locationTypes';
 
 type Props = {
   location: Location;
