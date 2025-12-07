@@ -4,16 +4,40 @@ import { useLocation } from '../hooks/useLocation';
 import { Location } from '../types/locationTypes';
 import { LocationCard } from '../components/LocationCard';
 import { useIdleDetection } from '../hooks/useIdleDetection';
+import { sendIdleNotification } from '../services/notificationService';
+import { useRef } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useSettingsStore } from '../store/useSettingsStore';
 
 const HomeScreen = () => {
-  const { data, loading, error, stopTracking } = useLocation();
+  const { data, loading, error } = useLocation();
   const { isIdle } = useIdleDetection(data);
+  const notificationSentRef = useRef(false);
+  const navigation = useNavigation();
+  const notificationsEnabled = useSettingsStore(
+    state => state.notificationsEnabled,
+  );
+  const trackingEnabled = useSettingsStore(state => state.trackingEnabled);
 
   useEffect(() => {
-    if (isIdle) {
-      stopTracking();
+    console.log('isIdle:', isIdle);
+
+    if (
+      isIdle &&
+      notificationsEnabled &&
+      trackingEnabled &&
+      !notificationSentRef.current
+    ) {
+      sendIdleNotification();
+      notificationSentRef.current = true;
     }
-  }, [isIdle, stopTracking]);
+  }, [isIdle, notificationsEnabled, trackingEnabled]);
+
+  useEffect(() => {
+    if (!isIdle) {
+      notificationSentRef.current = false;
+    }
+  }, [isIdle]);
 
   const renderItem = ({ item }: { item: Location }) => (
     <LocationCard location={item} />
@@ -29,11 +53,17 @@ const HomeScreen = () => {
 
   return (
     <>
-      {isIdle && (
+      {isIdle && notificationsEnabled && (
         <View style={styles.idleBanner}>
           <Text style={styles.idleText}>⚠️ User is inactive</Text>
         </View>
       )}
+      <Text
+        style={styles.settingsLink}
+        onPress={() => navigation.navigate('Settings' as never)}
+      >
+        ⚙️ Settings
+      </Text>
       <FlatList
         data={data}
         keyExtractor={item => item.id}
@@ -83,5 +113,13 @@ const styles = StyleSheet.create({
     color: '#b00020',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  settingsLink: {
+    textAlign: 'right',
+    color: '#007AFF',
+    marginBottom: 10,
+    paddingTop: 10,
+    paddingRight: 10,
+    fontSize: 16,
   },
 });

@@ -1,22 +1,33 @@
 import { useEffect, useState } from 'react';
-import { Location } from '../types/locationTypes';
 import {
   requestLocationPermission,
   startLocationTracking,
   stopLocationTracking,
 } from '../services/locationService';
+import { useLocationStore } from '../store/useLocationStore';
+import { useSettingsStore } from '../store/useSettingsStore';
 
 export const useLocation = () => {
-  const [data, setData] = useState<Location[]>([]);
+  const data = useLocationStore(state => state.locations);
+  const addLocation = useLocationStore(state => state.addLocation);
+  const trackingEnabled = useSettingsStore(state => state.trackingEnabled);
+  const samplingInterval = useSettingsStore(state => state.samplingInterval);
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [isTracking, setIsTracking] = useState(true);
 
   useEffect(() => {
     let watchId: number | null = null;
 
     const init = async () => {
+      // ✅ אם Tracking כבוי → אין לואודינג, אין הרשאה, אין כלום
+      if (!trackingEnabled) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
+
       const allowed = await requestLocationPermission();
 
       if (!allowed) {
@@ -27,14 +38,10 @@ export const useLocation = () => {
 
       watchId = startLocationTracking(
         location => {
-          if (!isTracking) return;
-
-          setData(prev => {
-            const updated = [location, ...prev];
-            return updated.slice(0, 100);
-          });
+          addLocation(location);
         },
         message => setError(message),
+        samplingInterval * 1000,
       );
 
       setLoading(false);
@@ -47,7 +54,11 @@ export const useLocation = () => {
         stopLocationTracking(watchId);
       }
     };
-  }, [isTracking]);
+  }, [trackingEnabled, addLocation, samplingInterval]);
 
-  return { data, error, loading, stopTracking: () => setIsTracking(false) };
+  return {
+    data,
+    error,
+    loading,
+  };
 };

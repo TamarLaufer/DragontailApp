@@ -23,6 +23,7 @@ export const requestLocationPermission = async (): Promise<boolean> => {
 export const startLocationTracking = (
   onLocationUpdate: (location: Location) => void,
   onError: (message: string) => void,
+  interval: number,
 ) => {
   return Geolocation.watchPosition(
     position => {
@@ -37,7 +38,11 @@ export const startLocationTracking = (
       onLocationUpdate(newLocation);
     },
     error => onError(error.message),
-    { enableHighAccuracy: true, distanceFilter: 10 },
+    {
+      enableHighAccuracy: true,
+      interval,
+      fastestInterval: interval,
+    },
   );
 };
 

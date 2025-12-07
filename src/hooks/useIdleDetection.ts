@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { Location } from '../types/locationTypes';
-
-const IDLE_TIMEOUT = 30_000; // 30 seconds
+import { useSettingsStore } from '../store/useSettingsStore';
 
 export const useIdleDetection = (locations: Location[]) => {
   const [isIdle, setIsIdle] = useState(false);
   const lastLocationTimeRef = useRef<number | null>(null);
+  const idleTimeout = useSettingsStore(state => state.idleTimeout);
 
   useEffect(() => {
     if (locations.length === 0) return;
@@ -33,13 +33,13 @@ export const useIdleDetection = (locations: Location[]) => {
       const now = Date.now();
       const diff = now - lastLocationTimeRef.current;
 
-      if (diff >= IDLE_TIMEOUT) {
+      if (diff >= idleTimeout) {
         setIsIdle(true);
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [lastLocationTimeRef, idleTimeout]);
 
   return { isIdle };
 };
