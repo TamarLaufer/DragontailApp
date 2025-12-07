@@ -5,7 +5,7 @@ type LocationState = {
   locations: Location[];
   addLocation: (location: Location) => void;
   deleteLocation: (id: string) => void;
-  editLocation: (id: string, location: Location) => void;
+  updateLocation: (id: string, note: string) => void;
   clear: () => void;
 };
 
@@ -22,10 +22,10 @@ export const useLocationStore = create<LocationState>(set => ({
       locations: state.locations.filter(location => location.id !== id),
     })),
 
-  editLocation: (id: string) =>
+  updateLocation: (id: string, note: string) =>
     set(state => ({
       locations: state.locations.map(location =>
-        location.id === id ? location : location,
+        location.id === id ? { ...location, note } : location,
       ),
     })),
 

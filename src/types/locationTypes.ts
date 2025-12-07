@@ -4,6 +4,7 @@ export type Location = {
   longitude: number;
   timestamp: number;
   accuracy?: number;
+  note?: string;
 };
 
 export type LocationResult = Location[];
