@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { Location } from '../types/locationTypes';
 import { useLocationStore } from '../store/useLocationStore';
+import { useState } from 'react';
+import { TextInput } from 'react-native';
 
 type Props = {
   location: Location;
@@ -17,6 +19,9 @@ type Props = {
 
 export const LocationCard: React.FC<Props> = ({ location }) => {
   const deleteLocation = useLocationStore(state => state.deleteLocation);
+  const [isEditing, setIsEditing] = useState(false);
+  const [note, setNote] = useState(location.note || '');
+  const updateLocation = useLocationStore(state => state.updateLocation);
 
   const openMaps = () => {
     const url = `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
@@ -52,6 +57,17 @@ https://www.google.com/maps?q=${location.latitude},${location.longitude}`,
         {new Date(location.timestamp).toLocaleTimeString()}
       </Text>
 
+      {isEditing ? (
+        <TextInput
+          style={styles.input}
+          value={note}
+          placeholder="Add note..."
+          onChangeText={setNote}
+        />
+      ) : (
+        <Text style={styles.note}>📝 {location.note || 'No note'}</Text>
+      )}
+
       {location.accuracy && (
         <Text style={styles.accuracy}>
           Accuracy: ±{Math.round(location.accuracy)}m
@@ -69,6 +85,17 @@ https://www.google.com/maps?q=${location.latitude},${location.longitude}`,
 
         <TouchableOpacity onPress={confirmDelete}>
           <Text style={[styles.action, styles.delete]}>🗑️ Delete</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => {
+            if (isEditing) {
+              updateLocation(location.id, note);
+            }
+            setIsEditing(!isEditing);
+          }}
+        >
+          <Text style={styles.action}>{isEditing ? '💾 Save' : '✏️ Edit'}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -107,5 +134,17 @@ const styles = StyleSheet.create({
   },
   delete: {
     color: '#D00000',
+  },
+  note: {
+    marginTop: 6,
+    fontSize: 13,
+    color: '#333',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 6,
+    marginTop: 6,
+    borderRadius: 4,
   },
 });
