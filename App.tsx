@@ -11,7 +11,6 @@ import {
 export default function App() {
   useEffect(() => {
     initNotifications();
-
     const unsubscribe = listenToNotificationEvents();
 
     return unsubscribe;

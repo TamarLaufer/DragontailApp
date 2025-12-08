@@ -20,8 +20,6 @@ const HomeScreen = () => {
   const trackingEnabled = useSettingsStore(state => state.trackingEnabled);
 
   useEffect(() => {
-    console.log('isIdle:', isIdle);
-
     if (
       isIdle &&
       notificationsEnabled &&

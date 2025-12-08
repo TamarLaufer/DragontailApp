@@ -1,11 +1,7 @@
 import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
 import { useSettingsStore } from '../store/useSettingsStore';
+import { CHANNEL_ID } from '../constants/constants';
 
-const CHANNEL_ID = 'idle-channel';
-
-/**
- * יצירת ערוץ נוטיפיקציות בהרצה ראשונית של האפליקציה
- */
 export const initNotifications = async () => {
   await notifee.createChannel({
     id: CHANNEL_ID,
@@ -14,15 +10,12 @@ export const initNotifications = async () => {
   });
 };
 
-/**
- * שליחת נוטיפיקציה כאשר המשתמש לא זז
- */
 export const sendIdleNotification = async () => {
   await notifee.displayNotification({
     title: 'No movement detected',
     body: 'You have been inactive for a while. Tap to stop location tracking.',
     android: {
-      channelId: 'idle-channel',
+      channelId: CHANNEL_ID,
       pressAction: { id: 'default' },
     },
     data: {
@@ -31,10 +24,6 @@ export const sendIdleNotification = async () => {
   });
 };
 
-/**
- * האזנה ללחיצה על נוטיפיקציה
- * כשנלחץ — מכבים את tracking
- */
 export const listenToNotificationEvents = () => {
   return notifee.onForegroundEvent(({ type, detail }) => {
     if (
@@ -42,7 +31,6 @@ export const listenToNotificationEvents = () => {
       detail.notification?.data?.type === 'idle'
     ) {
       console.log('🔕 User tapped idle notification — stopping tracking');
-
       useSettingsStore.getState().setTrackingEnabled(false);
     }
   });

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { IDLE_TIMEOUT } from '../constants/constants';
 
 export type SettingsState = {
   idleTimeout: number;
@@ -12,7 +13,7 @@ export type SettingsState = {
 };
 
 export const useSettingsStore = create<SettingsState>(set => ({
-  idleTimeout: 30_000,
+  idleTimeout: IDLE_TIMEOUT,
   trackingEnabled: true,
   notificationsEnabled: true,
   samplingInterval: 8,

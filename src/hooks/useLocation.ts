@@ -18,9 +18,7 @@ export const useLocation = () => {
 
   useEffect(() => {
     let watchId: number | null = null;
-
     const init = async () => {
-      // ✅ אם Tracking כבוי → אין לואודינג, אין הרשאה, אין כלום
       if (!trackingEnabled) {
         setLoading(false);
         return;

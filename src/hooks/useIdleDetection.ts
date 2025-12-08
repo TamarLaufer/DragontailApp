@@ -13,13 +13,11 @@ export const useIdleDetection = (locations: Location[]) => {
     const latestLocation = locations[0];
     const currentTimestamp = latestLocation.timestamp;
 
-    // אם זו הפעם הראשונה
     if (!lastLocationTimeRef.current) {
       lastLocationTimeRef.current = currentTimestamp;
       return;
     }
 
-    // אם התקבלה נקודת מיקום שונה – מאפסים את הטיימר
     if (currentTimestamp !== lastLocationTimeRef.current) {
       lastLocationTimeRef.current = currentTimestamp;
       setIsIdle(false);
