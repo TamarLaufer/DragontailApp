@@ -1,8 +1,8 @@
-import { Location } from '../types/locationTypes';
+import { Location, LocationResult } from '../types/locationTypes';
 import { create } from 'zustand';
 
 type LocationState = {
-  locations: Location[];
+  locations: LocationResult;
   addLocation: (location: Location) => void;
   deleteLocation: (id: string) => void;
   updateLocation: (id: string, note: string) => void;

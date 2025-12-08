@@ -25,27 +25,27 @@ export const startLocationTracking = (
   onError: (message: string) => void,
   interval: number,
 ) => {
-  return Geolocation.watchPosition(
-    position => {
-      const newLocation: Location = {
-        id: uuid.v4().toString(),
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        timestamp: Date.now(),
-        accuracy: position.coords.accuracy,
-      };
+  const intervalId = setInterval(() => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const newLocation: Location = {
+          id: uuid.v4().toString(),
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          timestamp: Date.now(),
+          accuracy: position.coords.accuracy,
+        };
 
-      onLocationUpdate(newLocation);
-    },
-    error => onError(error.message),
-    {
-      enableHighAccuracy: true,
-      interval,
-      fastestInterval: interval,
-    },
-  );
+        onLocationUpdate(newLocation);
+      },
+      error => onError(error.message),
+      { enableHighAccuracy: true },
+    );
+  }, interval);
+
+  return intervalId;
 };
 
-export const stopLocationTracking = (watchId: number) => {
-  Geolocation.clearWatch(watchId);
+export const stopLocationTracking = (intervalId: number) => {
+  clearInterval(intervalId);
 };

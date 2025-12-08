@@ -53,7 +53,8 @@ export const useLocation = () => {
         watchIdRef.current = null;
       }
     };
-  }, [trackingEnabled, addLocation, samplingInterval]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trackingEnabled, samplingInterval]);
 
   return {
     data,
