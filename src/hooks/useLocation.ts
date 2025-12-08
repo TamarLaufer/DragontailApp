@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   requestLocationPermission,
   startLocationTracking,
@@ -15,9 +15,9 @@ export const useLocation = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const watchIdRef = useRef<number | null>(null);
 
   useEffect(() => {
-    let watchId: number | null = null;
     const init = async () => {
       if (!trackingEnabled) {
         setLoading(false);
@@ -34,7 +34,7 @@ export const useLocation = () => {
         return;
       }
 
-      watchId = startLocationTracking(
+      watchIdRef.current = startLocationTracking(
         location => {
           addLocation(location);
         },
@@ -48,8 +48,9 @@ export const useLocation = () => {
     init();
 
     return () => {
-      if (watchId !== null) {
-        stopLocationTracking(watchId);
+      if (watchIdRef.current !== null) {
+        stopLocationTracking(watchIdRef.current);
+        watchIdRef.current = null;
       }
     };
   }, [trackingEnabled, addLocation, samplingInterval]);
