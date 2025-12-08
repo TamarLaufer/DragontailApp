@@ -37,7 +37,7 @@ export const useIdleDetection = (locations: Location[]) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [lastLocationTimeRef, idleTimeout]);
+  }, [idleTimeout]);
 
   return { isIdle };
 };

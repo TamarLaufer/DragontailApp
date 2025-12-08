@@ -42,22 +42,25 @@ const SettingsScreen = () => {
       </View>
 
       <View style={styles.info}>
-        <Text>Idle Timeout: {idleTimeout / 1000} seconds</Text>
+        <Text>Idle timeout: {idleTimeout / 60000} minutes</Text>
       </View>
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={localSampling}
-        onChangeText={text => {
-          setLocalSampling(text.replace(/[^0-9]/g, '')); // רק מספרים
-        }}
-        onEndEditing={() => {
-          const value = Number(localSampling);
-          if (!isNaN(value) && value > 0) {
-            setSamplingInterval(value);
-          }
-        }}
-      />
+      <View style={styles.row}>
+        <Text>Sampling interval (seconds)</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={localSampling}
+          onChangeText={text => {
+            setLocalSampling(text.replace(/[^0-9]/g, ''));
+          }}
+          onEndEditing={() => {
+            const value = Number(localSampling);
+            if (!isNaN(value) && value > 0) {
+              setSamplingInterval(value);
+            }
+          }}
+        />
+      </View>
     </View>
   );
 };
@@ -79,7 +82,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
   },
   info: {
     marginTop: 20,
