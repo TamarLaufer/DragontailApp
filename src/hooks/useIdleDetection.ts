@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { Location } from '../types/locationTypes';
+import { LocationResult } from '../types/locationTypes';
 import { useSettingsStore } from '../store/useSettingsStore';
 
-export const useIdleDetection = (locations: Location[]) => {
+export const useIdleDetection = (locations: LocationResult) => {
   const [isIdle, setIsIdle] = useState(false);
   const lastLocationTimeRef = useRef<number | null>(null);
   const idleTimeout = useSettingsStore(state => state.idleTimeout);
