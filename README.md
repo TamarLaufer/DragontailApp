@@ -2,7 +2,8 @@ Location Tracker App
 
 A React Native app that tracks the user's location at a fixed interval, detects inactivity, and sends notifications when the user is idle.
 
-How to Run
+How to Run: 
+
 npm install
 npm run android
 
