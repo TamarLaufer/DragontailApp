@@ -2,6 +2,7 @@ Location Tracker App
 
 A React Native app that tracks the user's location at a fixed interval, detects inactivity, and sends notifications when the user is idle.
 
+
 How to Run: 
 
 npm install
@@ -10,7 +11,8 @@ npm run android
 
 Make sure location permissions are enabled on the device.
 
-Features
+
+Features:
 
 Configurable location sampling interval
 
